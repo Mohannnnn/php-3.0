@@ -156,4 +156,49 @@
 			echo "欢迎 " . $_COOKIE["user"] . "!<br>";
 		else
 			echo "普通访客!<br>";
+		
+		7.php  session 变量用于存储关于用户会话（session）的信息，或者更改用户会话（session）的设置
+
+			启动会话：session_start()且必须在<html>标签之前
+			$_SESSION['views']=1; //储存session变量
+
+			销毁 session ：使用 unset() 或 session_destroy() 函数。
+
+			unset($_SESSION['views']);//销毁某个session
+			或者
+			session_destroy();//彻底销毁
+
+		8.php 发送电子邮件。mail()函数用于脚本发送邮件
+
+		9.php 过滤器
+		filter_var() - 通过一个指定的过滤器来过滤单一的变量
+		filter_var_array() - 通过相同的或不同的过滤器来过滤多个变量
+		filter_input - 获取一个输入变量，并对它进行过滤
+		filter_input_array - 获取多个输入变量，并通过相同的或不同的过滤器对它们进行过滤
+
+		10.php JSON
+		json_encode	对变量进行 JSON 编码,编码后为json数据了
+		json_decode	对 JSON 格式的字符串进行解码，转换为 PHP 变量
+		json_last_error	返回最后发生的错误
+
+		$json = '{"a":1,"b":2,"c":3,"d":4,"e":5}';
+		var_dump(json_decode($json));//没有参数true时，默认返回对象
+		var_dump(json_decode($json, true));//有true时，为数组
+
+		以上代码执行结果为：
+		object(stdClass)#1 (5) {
+		    ["a"] => int(1)
+		    ["b"] => int(2)
+		    ["c"] => int(3)
+		    ["d"] => int(4)
+		    ["e"] => int(5)
+		}//对象
+
+		array(5) {
+		    ["a"] => int(1)
+		    ["b"] => int(2)
+		    ["c"] => int(3)
+		    ["d"] => int(4)
+		    ["e"] => int(5)
+		}//数组
  ?>
