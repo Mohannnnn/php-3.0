@@ -201,4 +201,231 @@
 		    ["d"] => int(4)
 		    ["e"] => int(5)
 		}//数组
+	11.php与数据库
+		(1).连接数据库
+			$servername = 'localhost';
+	   		$username = 'root';
+	   		$password = 'wuhan';
+
+	   		//创建连接
+	   		$conn = new mysqli($servername,$username,$password);
+
+	   		//检测连接
+	   		if($conn->connect_error) {
+	   			die('连接失败：'.$conn.connect_error);
+	   		}else {
+	   			echo "连接成功";
+	   		}
+
+	   		$conn->close();
+
+	   	(2).创建数据库
+	   		$servername = "localhost";
+			$username = "root";
+			$password = "wuhan";
+
+			// 创建连接
+			$conn = mysqli_connect($servername, $username, $password);
+			// 检测连接
+			if (!$conn) {
+			    die("连接失败: " . mysqli_connect_error());
+			}
+
+			// 创建数据库
+			$sql = "CREATE DATABASE myDB";
+			if (mysqli_query($conn, $sql)) {
+			    echo "数据库创建成功";
+			} else {
+			    echo "Error creating database: " . mysqli_error($conn);
+			}
+
+			mysqli_close($conn);
+
+		(3).创建mysql表
+			$servername = "localhost";
+			$username = "root";
+			$password = "wuhan";
+			$dbname = "myDB";
+
+			// 创建连接
+			$conn = new mysqli($servername, $username, $password, $dbname);
+			// 检测连接
+			if ($conn->connect_error) {
+			    die("连接失败: " . $conn->connect_error);
+			} 
+
+			// 使用 sql 创建数据表
+			$sql = "CREATE TABLE MyGuests (
+			id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+			firstname VARCHAR(30) NOT NULL,
+			lastname VARCHAR(30) NOT NULL,
+			email VARCHAR(50),
+			reg_date TIMESTAMP
+			)";
+
+			if ($conn->query($sql) === TRUE) {
+			    echo "Table MyGuests created successfully";
+			} else {
+			    echo "创建数据表错误: " . $conn->error;
+			}
+
+			$conn->close();
+
+		(4).插入数据
+			$servername = "localhost";
+			$username = "root";
+			$password = "wuhan";
+			$dbname = "myDB";
+
+			// 创建连接
+			$conn = new mysqli($servername, $username, $password, $dbname);
+			// 检测连接
+			if ($conn->connect_error) {
+			    die("连接失败: " . $conn->connect_error);
+			} 
+
+			$sql = "INSERT INTO MyGuests (firstname, lastname, email)
+			VALUES ('John', 'Doe', 'john@example.com')";
+			$sql .= "INSERT INTO MyGuests (firstname, lastname, email)
+			VALUES ('Mary', 'Moe', 'mary@example.com');";
+			$sql .= "INSERT INTO MyGuests (firstname, lastname, email)
+			VALUES ('Julie', 'Dooley', 'julie@example.com')";
+
+			if ($conn->query($sql) === TRUE) {
+			    echo "新记录插入成功";
+			} else {
+			    echo "Error: " . $sql . "<br>" . $conn->error;
+			}
+
+			$conn->close();
+
+		(5).使用预处理语句：用于执行多个相同的sql语句，并且执行效率更高。
+			$servername = "localhost";
+			$username = "root";
+			$password = "wuhan";
+			$dbname = "myDB";
+
+			// 创建连接
+			$conn = new mysqli($servername, $username, $password, $dbname);
+
+			// 检测连接
+			if ($conn->connect_error) {
+			    die("连接失败: " . $conn->connect_error);
+			}
+
+			// 预处理及绑定
+			$stmt = $conn->prepare("INSERT INTO MyGuests (firstname, lastname, email) VALUES(?, ?, ?)");
+			$stmt->bind_param("sss", $firstname, $lastname, $email);
+
+			// 设置参数并执行
+			$firstname = "John";
+			$lastname = "Doe";
+			$email = "john@example.com";
+			$stmt->execute();
+
+			$firstname = "Mary";
+			$lastname = "Moe";
+			$email = "mary@example.com";
+			$stmt->execute();
+
+			$firstname = "Julie";
+			$lastname = "Dooley";
+			$email = "julie@example.com";
+			$stmt->execute();
+
+			echo "新记录插入成功";
+
+			$stmt->close();
+			$conn->close();
+
+		(6).读取数据
+			$servername = "localhost";
+			$username = "root";
+			$password = "wuhan";
+			$dbname = "myDB";
+
+			// 创建连接
+			$conn = new mysqli($servername, $username, $password, $dbname);
+			// 检测连接
+			if ($conn->connect_error) {
+			    die("连接失败: " . $conn->connect_error);
+			} 
+
+			$sql = "SELECT id, firstname, lastname FROM MyGuests";
+
+			$result = $conn->query($sql);
+
+			if ($result->num_rows > 0) {
+			    // 输出每行数据
+			    while($row = $result->fetch_assoc()) {
+			        echo "<br> id: ". $row["id"]. " - Name: ". $row["firstname"]. " " . $row["lastname"];
+			    }
+			} else {
+			    echo "0 个结果";
+			}
+			$conn->close();
+
+		(7).mysql的where子句(用mysqli_query()函数,该函数用于向mysql连接发送查询和命令)
+
+
+			$con=mysqli_connect("localhost","root","wuhan","myDB");
+			// 检测连接
+			if (mysqli_connect_errno())
+			{
+				echo "连接失败: " . mysqli_connect_error();
+			}
+
+			$result = mysqli_query($con,"SELECT * FROM MyGuests
+			WHERE firstname='Peter'");
+
+			while($row = mysqli_fetch_array($result))
+			{
+				echo $row['firstname'] . " " . $row['lastname'];
+				echo "<br>";
+			}
+
+		(8).order by 子句
+			$con=mysqli_connect("localhost","root","wuhan","myDB");
+			// 检测连接
+			if (mysqli_connect_errno())
+			{
+				echo "连接失败: " . mysqli_connect_error();
+			}
+
+			$result = mysqli_query($con,"SELECT * FROM MyGuests ORDER BY email");
+
+			while($row = mysqli_fetch_array($result))
+			{
+				echo $row['firstname'];
+				echo " " . $row['lastname'];
+				echo " " . $row['email'];
+				echo "<br>";
+			}
+
+			mysqli_close($con);
+
+		(9).update子句
+			$con=mysqli_connect("localhost","root","wuhan","myDB");
+			// 检测连接
+			if (mysqli_connect_errno())
+			{
+				echo "连接失败: " . mysqli_connect_error();
+			}
+
+			mysqli_query($con,"UPDATE MyGuests SET email='1063022109@qq.com'
+			WHERE firstname='Peter' AND LastName='Han'");
+
+			mysqli_close($con);
+
+		(10).delete子句
+			$con=mysqli_connect("localhost","root","wuhan","myDB");
+			// 检测连接
+			if (mysqli_connect_errno())
+			{
+				echo "连接失败: " . mysqli_connect_error();
+			}
+
+			mysqli_query($con,"DELETE FROM MyGuests WHERE lastname='Han'");
+
+			mysqli_close($con);
  ?>
